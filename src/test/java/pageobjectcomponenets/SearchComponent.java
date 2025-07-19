@@ -16,4 +16,10 @@ public class SearchComponent {
             page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Search")).click();
         });
     }
+
+    public void sortBy(String sortFilter) {
+        page.waitForResponse("**/products?sort=**", () -> {
+            page.getByTestId("sort").selectOption(sortFilter);
+        });
+    }
 }

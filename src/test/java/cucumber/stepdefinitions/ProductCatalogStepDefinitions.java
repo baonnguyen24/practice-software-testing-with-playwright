@@ -7,6 +7,8 @@ import io.cucumber.java.en.When;
 import org.assertj.core.api.Assertions;
 import pageobjectcomponenets.*;
 
+import java.util.List;
+
 
 public class ProductCatalogStepDefinitions {
 
@@ -23,20 +25,34 @@ public class ProductCatalogStepDefinitions {
 
     @Given("Sally is on the home page")
     public void sally_is_on_the_home_page() {
-        // Write code here that turns the phrase above into concrete actions
         navBar.openHomePage();
 
     }
     @When("she searches for {string}")
     public void she_searches_for(String searchTerm) {
-        // Write code here that turns the phrase above into concrete actions
         searchComponent.searchBy(searchTerm);
 
     }
     @Then("the {string} product should be displayed")
     public void the_product_should_be_displayed(String productName) {
-        // Write code here that turns the phrase above into concrete actions
         var matchingProducts = productList.getProductNames();
         Assertions.assertThat(matchingProducts).contains(productName);
+    }
+
+    @Then("the following products should be displayed:")
+    public void the_following_products_should_be_displayed(List<String> expectedProducts) {
+        var matchingProducts = productList.getProductNames();
+        Assertions.assertThat(matchingProducts).containsAll(expectedProducts);
+    }
+
+    @When("she sorts by {string}")
+    public void she_sorts_by(String sortFilter) {
+        searchComponent.sortBy(sortFilter);
+
+    }
+    @Then("the first product displayed should be {string}")
+    public void the_first_product_displayed_should_be(String firstProduct) {
+        List<String> productNames = productList.getProductNames();
+        Assertions.assertThat(productNames).startsWith(firstProduct);
     }
 }

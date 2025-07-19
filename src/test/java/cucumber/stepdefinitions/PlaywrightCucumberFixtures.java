@@ -30,21 +30,18 @@ public class PlaywrightCucumberFixtures {
     static private final ThreadLocal<Page> page = new ThreadLocal<>();
 
     @Before(order = 100)
-    public void SetupBrowserContex() {
-        System.out.println("Setup Browser Context");
+    public void SetupBrowserContext() {
         browserContext.set(browser.get().newContext());
         page.set(browserContext.get().newPage());
     }
 
     @After
     public void closeContext() {
-        System.out.println("Close Context");
         browserContext.get().close();
     }
 
     @AfterAll
     public static void tearDown() {
-        System.out.println("Tear Down");
         browser.get().close();
         browser.remove();
         playwright.get().close();
