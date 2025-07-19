@@ -20,26 +20,26 @@ public class PlaywrightCucumberFixtures {
             = ThreadLocal.withInitial( () ->
                 playwright.get().chromium().launch(
                     new BrowserType.LaunchOptions()
-                        .setHeadless(true)
+                        .setHeadless(false)
                         .setArgs(Arrays.asList("--no-sandbox", "--disable-extensions", "--disable-gpu"))
         )
     );
 
-    protected BrowserContext browserContext;
+    static private final ThreadLocal<BrowserContext> browserContext = new ThreadLocal<>();
 
-    protected Page page;
+    static private final ThreadLocal<Page> page = new ThreadLocal<>();
 
-    @Before
+    @Before(order = 100)
     public void SetupBrowserContex() {
         System.out.println("Setup Browser Context");
-        browserContext = browser.get().newContext();
-        page = browserContext.newPage();
+        browserContext.set(browser.get().newContext());
+        page.set(browserContext.get().newPage());
     }
 
     @After
     public void closeContext() {
         System.out.println("Close Context");
-        browserContext.close();
+        browserContext.get().close();
     }
 
     @AfterAll
@@ -49,5 +49,9 @@ public class PlaywrightCucumberFixtures {
         browser.remove();
         playwright.get().close();
         playwright.remove();
+    }
+
+    public static Page getPage() {
+        return page.get();
     }
 }
